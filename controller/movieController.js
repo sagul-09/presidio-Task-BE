@@ -115,6 +115,7 @@ res.json(movies);
 const languageCount = async (req, res) => {
   try {
     const searchLanguage = req.query.language;
+    console.log(searchLanguage);
     const count = await Movie.countDocuments({ language: searchLanguage });
     res.status(200).json({ language: searchLanguage, count: count });
   } catch (err) {
