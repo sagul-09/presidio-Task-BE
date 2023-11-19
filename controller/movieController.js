@@ -43,11 +43,11 @@ const updateMovie = async (req, res) => {
   try {
     const movie = await Movie.findById(req.params.id);
     if (movie) {
-      movie.title = req.body.title;
-      movie.director = req.body.director;
+      movie.title = req.body.title.toLowerCase();
+      movie.director = req.body.director.toLowerCase();
       movie.year = req.body.year;
-      movie.language = req.body.language;
-      movie.genre = req.body.genre;
+      movie.language = req.body.language.toLowerCase();
+      movie.genre = req.body.genre.toLowerCase();
       movie.imdb = req.body.imdb;
       const updatedMovie = await movie.save();
       res.json(updatedMovie);
@@ -92,4 +92,26 @@ const filterMovies = async (req, res) => {
   }
 };
 
-export { allMovies, addMovie, getMovie, updateMovie, deleteMovie, filterMovies };
+const searchMovies = async (req, res) => {
+  try{
+const searchTitle = req.query.title;
+const movies = await Movie.findOne({title: searchTitle});
+res.json(movies);
+} catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const languageCount = async (req, res) => {
+  try{
+    const searchLanguage = req.query.language;
+    console.log(searchLanguage);
+    const count = await Movie.countDocuments({language: searchLanguage});
+    res.json({language: searchLanguage, count: count});
+  }
+  catch(err){
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export { allMovies, addMovie, getMovie, updateMovie, deleteMovie, filterMovies , searchMovies, languageCount};
