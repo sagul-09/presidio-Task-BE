@@ -4,9 +4,9 @@ const router = express.Router();
 
 router.route("/").get(allMovies)
 router.route("/add").post(addMovie);
-router.route("/:id").get(getMovie).put(updateMovie).delete(deleteMovie);
 router.route("/search").get(searchMovies);
 router.route("/filter").get(filterMovies);
 router.route("/language").get(languageCount); //help :"( not working
+router.route("/:id").get(getMovie).put(updateMovie).delete(deleteMovie);
 
 export default router;
