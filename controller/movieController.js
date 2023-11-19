@@ -12,11 +12,11 @@ const allMovies = async (req, res) => {
 const addMovie = async (req, res) => {
   try {
     const movie = new Movie({
-      title: req.body.title,
-      director: req.body.director,
+      title: req.body.title.toLowerCase(),
+      director: req.body.director.toLowerCase(),
       year: req.body.year,
-      language: req.body.language,
-      genre: req.body.genre,
+      language: req.body.language.toLowerCase(),
+      genre: req.body.genre.toLowerCase(),
       imdb: req.body.imdb,
     });
     const createdMovie = await movie.save();
@@ -74,13 +74,14 @@ const deleteMovie = async (req, res) => {
 
 const filterMovies = async (req, res) => {
 
-  const { title, director, year, language, imdb } = req.query;
+  const { title, director, year, language, imdb, genre } = req.query;
 
   let filter = {};
   if (title) filter.title = title;
   if (director) filter.director = director;
   if (year) filter.year = year;
   if (language) filter.language = language;
+  if (genre) filter.genre = genre;
   if (imdb) filter.imdb = imdb;
 
   try {

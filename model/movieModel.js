@@ -24,7 +24,10 @@ const Schema = new mongoose.Schema({
     },
     imdb: {
         type: Number,
+        min:1,
+        max:10,
         required: true
+        
     },  
 },
     {
