@@ -1,31 +1,39 @@
-import mongoose from mongoose
-const movieSchema= new mongoose.Schemea({
-    moveiName:{
+import mongoose from "mongoose";
+
+const Schema = new mongoose.Schema({
+    title: {
         type: String,
         required: true,
-        unique: true,
-        index:true
+        unique:true
     },
-    movieYear:{
-        required:true,
-        unique:false,
-        index:true
+    director: {
+        type: String,
+        required: true
     },
-    movieGenre1 : {
-        type : String,
-        enum: ['Action', 'Comedy','Drama','SciFi','Horror','Thriller','Romance','Fantasy','Animation','Adventure','Crime', 'Biography'],
-        required : true
-    },
-    movieGenre2 : {
-        type : String,
-        enum: ['Action', 'Comedy','Drama','SciFi','Horror','Thriller','Romance','Fantasy','Animation','Adventure','Crime', 'Biography'],
-        required : true
-    },
-    imdb:{
+    year: {
         type: Number,
-        required:true,
-        unique: false,
-        min:0,
-        max:10
+        required: true
+    },
+    language: {
+        type: String,
+        required: true
+    },
+    genre: {
+        type: String,
+        required: true
+    },
+    imdb: {
+        type: Number,
+        required: true
+    },  
+},
+    {
+        timestamps: true,
     }
-})
+
+);
+
+const movieSchema = mongoose.model("Movie", Schema);
+
+export default movieSchema;
+
