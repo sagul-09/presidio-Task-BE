@@ -1,5 +1,6 @@
 import Movie from "../model/movieModel.js";
 
+//get all movies from database
 const allMovies = async (req, res) => {
   try {
     const movies = await Movie.find({});
@@ -9,6 +10,7 @@ const allMovies = async (req, res) => {
   }
 };
 
+//add movie to database
 const addMovie = async (req, res) => {
   try {
     const movie = new Movie({
@@ -26,6 +28,7 @@ const addMovie = async (req, res) => {
   }
 };
 
+//get movie by ID
 const getMovie = async (req, res) => {
   try {
     const movie = await Movie.findById(req.params.id);
@@ -39,6 +42,7 @@ const getMovie = async (req, res) => {
   }
 };
 
+//update movie by ID
 const updateMovie = async (req, res) => {
   try {
     const movie = await Movie.findById(req.params.id);
@@ -59,6 +63,7 @@ const updateMovie = async (req, res) => {
   }
 };
 
+//delete movie by ID
 const deleteMovie = async (req, res) => {
   try {
     const movie= await Movie.findById(req.params.id);
@@ -72,6 +77,8 @@ const deleteMovie = async (req, res) => {
   }
 };
 
+
+//movie filter by title, director, year, language, genre, imdb
 const filterMovies = async (req, res) => {
 
   const { title, director, year, language, imdb, genre } = req.query;
@@ -92,6 +99,7 @@ const filterMovies = async (req, res) => {
   }
 };
 
+//search movie by title
 const searchMovies = async (req, res) => {
   try{
 const searchTitle = req.query.title;
@@ -102,14 +110,14 @@ res.json(movies);
   }
 };
 
+
+//language count is not working :(
 const languageCount = async (req, res) => {
-  try{
+  try {
     const searchLanguage = req.query.language;
-    console.log(searchLanguage);
-    const count = await Movie.countDocuments({language: searchLanguage});
-    res.json({language: searchLanguage, count: count});
-  }
-  catch(err){
+    const count = await Movie.countDocuments({ language: searchLanguage });
+    res.status(200).json({ language: searchLanguage, count: count });
+  } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
