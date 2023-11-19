@@ -72,4 +72,23 @@ const deleteMovie = async (req, res) => {
   }
 };
 
-export { allMovies, addMovie, getMovie, updateMovie, deleteMovie };
+const filterMovies = async (req, res) => {
+
+  const { title, director, year, language, imdb } = req.query;
+
+  let filter = {};
+  if (title) filter.title = title;
+  if (director) filter.director = director;
+  if (year) filter.year = year;
+  if (language) filter.language = language;
+  if (imdb) filter.imdb = imdb;
+
+  try {
+    const movies = await Movie.find(filter);
+    res.json(movies);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export { allMovies, addMovie, getMovie, updateMovie, deleteMovie, filterMovies };
