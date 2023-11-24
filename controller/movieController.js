@@ -13,15 +13,14 @@ const allMovies = async (req, res) => {
 //add movie to database
 const addMovie = async (req, res) => {
   try {
-    const movie = new Movie({
-      title: req.body.title.toLowerCase(),
-      director: req.body.director.toLowerCase(),
-      year: req.body.year,
-      language: req.body.language.toLowerCase(),
-      genre: req.body.genre.toLowerCase(),
-      imdb: req.body.imdb,
-    });
-    const createdMovie = await movie.save();
+    if (!req.body.title || !req.body.director || !req.body.year || !req.body.language || !req.body.genre || !req.body.imdb) { 
+      return res.status(400).json({ message: "Please fill all required fields" });
+    }
+    const movieExists = await Movie.findOne({ title: req.body.title });
+    if (movieExists) {
+      return res.status(400).json({ message: "Movie already exists" });
+    }
+     const createdMovie = await Movie.create(req.body);
     res.status(201).json(createdMovie);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -45,19 +44,17 @@ const getMovie = async (req, res) => {
 //update movie by ID
 const updateMovie = async (req, res) => {
   try {
-    const movie = await Movie.findById(req.params.id);
-    if (movie) {
-      movie.title = req.body.title.toLowerCase();
-      movie.director = req.body.director.toLowerCase();
-      movie.year = req.body.year;
-      movie.language = req.body.language.toLowerCase();
-      movie.genre = req.body.genre.toLowerCase();
-      movie.imdb = req.body.imdb;
-      const updatedMovie = await movie.save();
-      res.json(updatedMovie);
-    } else {
-      res.status(404).json({ message: "Movie not found" });
+    if (!req.body.title || !req.body.director || !req.body.year || !req.body.language || !req.body.genre || !req.body.imdb) { 
+      return res.status(400).json({ message: "Please fill all required fields" });
     }
+    const movieExists = await Movie.findById(req.params.id);
+    if (!movieExists) {
+      return res.status(400).json({ message: "Movie not exists" });
+    }
+    await Movie.findByIdAndUpdate(req.params.id, req.body,{
+      new: true,
+    });
+    res.status(200).json({ message: "Movie updated successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -114,11 +111,14 @@ res.json(movies);
 //language count is not working :(
 const languageCount = async (req, res) => {
   try {
-    const searchLanguage = req.query.language;
-    console.log(searchLanguage);
-    const count = await Movie.countDocuments({ language: searchLanguage });
-    res.status(200).json({ language: searchLanguage, count: count });
-  } catch (err) {
+    const language = req.query.language;
+    const count = await Movie.countDocuments({ language: language });
+    if (!count || count === 0) {
+      return res.status(404).json({ message: "No movies found" });
+    }
+    res.json({ language: language, count: count });
+  }
+  catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
