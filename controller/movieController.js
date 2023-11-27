@@ -4,7 +4,7 @@ import Movie from "../model/movieModel.js";
 const allMovies = async (req, res) => {
   try {
     const movies = await Movie.find({});
-    res.json(movies);
+    res.status(200).json({ movies : movies });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -18,7 +18,7 @@ const addMovie = async (req, res) => {
     }
     const movieExists = await Movie.findOne({ title: req.body.title });
     if (movieExists) {
-      return res.status(400).json({ message: "Movie already exists" });
+      return res.status(409).json({ message: "Movie already exists" });
     }
      const createdMovie = await Movie.create(req.body);
     res.status(201).json(createdMovie);
@@ -32,7 +32,7 @@ const getMovie = async (req, res) => {
   try {
     const movie = await Movie.findById(req.params.id);
     if (movie) {
-      res.json(movie);
+      res.status(200).json({message: "Movie found", movie: movie});
     } else {
       res.status(404).json({ message: "Movie not found" });
     }
@@ -49,7 +49,7 @@ const updateMovie = async (req, res) => {
     }
     const movieExists = await Movie.findById(req.params.id);
     if (!movieExists) {
-      return res.status(400).json({ message: "Movie not exists" });
+      return res.status(404).json({ message: "Movie not exists" });
     }
     await Movie.findByIdAndUpdate(req.params.id, req.body,{
       new: true,
@@ -68,9 +68,9 @@ const deleteMovie = async (req, res) => {
       return res.status(404).json({ message: "Movie not found" });
     }
     await Movie.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "Movie deleted successfully" });
+    res.status(204).json({ message: "Movie deleted successfully" });
   } catch (error) {
-    res.status(409).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -90,7 +90,11 @@ const filterMovies = async (req, res) => {
 
   try {
     const movies = await Movie.find(filter);
-    res.json(movies);
+    const count = await Movie.countDocuments(filter);
+    if(!movies || movies.length === 0) {
+      return res.status(404).json({ message: "No movies found" });
+    }
+    res.status(200).json({count:count,movies:movies});
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -101,22 +105,22 @@ const searchMovies = async (req, res) => {
   try{
 const searchTitle = req.query.title;
 const movies = await Movie.findOne({title: searchTitle});
-res.json(movies);
+res.status(200).json({message: "Movie found", movie: movies});
 } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-
-//language count is not working :(
+//language count 
 const languageCount = async (req, res) => {
   try {
     const language = req.query.language;
     const count = await Movie.countDocuments({ language: language });
+    const movies = await Movie.find({ language: language });
     if (!count || count === 0) {
-      return res.status(404).json({ message: "No movies found" });
+      return res.status(406).json({ message: "No movies found" });
     }
-    res.json({ language: language, count: count });
+    res.status(200).json({ language: language, count: count, movies: movies });
   }
   catch (err) {
     res.status(500).json({ message: err.message });
