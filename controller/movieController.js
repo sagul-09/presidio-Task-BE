@@ -120,7 +120,7 @@ const languageCount = async (req, res) => {
     const count = await Movie.countDocuments({ language: language });
     const movies = await Movie.find({ language: language });
     if (!count || count === 0) {
-      return res.status(406).json({ message: "No movies found" });
+      return res.status(404).json({ message: "No movies found" });
     }
     res.status(200).json({ message: "Movies Found",language: language, count: count, movies: movies });
   }
