@@ -77,10 +77,9 @@ const deleteMovie = async (req, res) => {
 //movie filter by title, director, year, language, genre, imdb
 const filterMovies = async (req, res) => {
 
-  const { title, director, year, language, imdb, genre } = req.query;
+  const { director, year, language, imdb, genre } = req.query;
 
   let filter = {};
-  if (title) filter.title = title;
   if (director) filter.director = director;
   if (year) filter.year = year;
   if (language) filter.language = language;
