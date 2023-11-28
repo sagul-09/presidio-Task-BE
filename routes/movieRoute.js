@@ -11,5 +11,4 @@ router.route("/get/:id").get(getMovie);
 router.route("/update/:id").put(updateMovie);
 router.route("/delete/:id").delete(deleteMovie);
 
-
 export default router;
