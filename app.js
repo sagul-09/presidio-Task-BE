@@ -11,8 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/",(req,res)=>{
-    res.send("Welcome to the Movie API Server <br><br> /api/v1/movies <br> /api/v1/movies/add <br> /api/v1/movies/search <br> /api/v1/movies/filter <br> /api/v1/movies/language <br> /api/v1/movies/:id");
-});
+    res.send("Welcome to the Movie API Server <br><br> /api/v1/movie <br> /api/v1/movie/add <br> /api/v1/movie/search <br> /api/v1/movie/filter <br> /api/v1/movie/language <br> /api/v1/movie/delete/:id <br> /api/v1/movie/get/:id <br> /api/v1/movie/update/:id");});
 const db = mongoose.connect(process.env.DB_URL).then(()=>{
     console.log("DB is connected"); 
 }).catch((err)=>{

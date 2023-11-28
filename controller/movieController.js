@@ -21,7 +21,7 @@ const addMovie = async (req, res) => {
       return res.status(409).json({ message: "Movie already exists" });
     }
      const createdMovie = await Movie.create(req.body);
-    res.status(201).json(createdMovie);
+    res.status(201).json({ message: "Movie added successfully", movie: createdMovie });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -54,7 +54,7 @@ const updateMovie = async (req, res) => {
     await Movie.findByIdAndUpdate(req.params.id, req.body,{
       new: true,
     });
-    res.status(200).json({ message: "Movie updated successfully" });
+    res.status(200).json({ message: "Movie updated successfully", movie: movieExists });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -67,7 +67,7 @@ const deleteMovie = async (req, res) => {
     if (!movie) {
       return res.status(404).json({ message: "Movie not found" });
     }
-    res.status(200).json({ message: "Movie removed successfully" });
+    res.status(200).json({ message: "Movie removed successfully", movie: movie });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -93,7 +93,7 @@ const filterMovies = async (req, res) => {
     if(!movies || movies.length === 0) {
       return res.status(404).json({ message: "No movies found" });
     }
-    res.status(200).json({count:count,movies:movies});
+    res.status(200).json({ message: "Movies Found",count:count,movies:movies});
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -103,8 +103,12 @@ const filterMovies = async (req, res) => {
 const searchMovies = async (req, res) => {
   try{
 const searchTitle = req.query.title;
-const movies = await Movie.findOne({title: searchTitle});
-res.status(200).json({message: "Movie found", movie: movies});
+const movies = await Movie.find({title: {$regex: new RegExp(searchTitle), $options: 'i'}});
+const count = await Movie.countDocuments({title: {$regex: new RegExp(searchTitle), $options: 'i'}})
+if(!movies || movies.length === 0) {
+  return res.status(404).json({ message: "No movies found" });
+}
+res.status(200).json({message: "Movie found",count: count, movie: movies});
 } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -119,7 +123,7 @@ const languageCount = async (req, res) => {
     if (!count || count === 0) {
       return res.status(406).json({ message: "No movies found" });
     }
-    res.status(200).json({ language: language, count: count, movies: movies });
+    res.status(200).json({ message: "Movies Found",language: language, count: count, movies: movies });
   }
   catch (err) {
     res.status(500).json({ message: err.message });
