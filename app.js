@@ -3,11 +3,16 @@ import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import movieRoute from "./routes/movieRoute.js";
+const app = express();
+const PORT=4000;
 dotenv.config();
 
-const PORT=4000;
-const app = express();
-app.use(cors());
+const corsConfig = {
+    credentials: true,
+    origin: true,
+  };
+  app.use(cors(corsConfig));
+  
 app.use(express.json());
 
 app.get("/",(req,res)=>{
