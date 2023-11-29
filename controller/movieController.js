@@ -51,10 +51,10 @@ const updateMovie = async (req, res) => {
     if (!movieExists) {
       return res.status(404).json({ message: "Movie not exists" });
     }
-    await Movie.findByIdAndUpdate(req.params.id, req.body,{
+    const updateMovie = await Movie.findByIdAndUpdate(req.params.id, req.body,{
       new: true,
     });
-    res.status(200).json({ message: "Movie updated successfully", movie: movieExists });
+    res.status(200).json({ message: "Movie updated successfully", movie: updateMovie });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -120,7 +120,7 @@ const languageCount = async (req, res) => {
     const count = await Movie.countDocuments({ language: language });
     const movies = await Movie.find({ language: language });
     if (!count || count === 0) {
-      return res.status(404).json({ message: "No movies found" });
+      return res.status(400).json({ message: "No movies found" });
     }
     res.status(200).json({ message: "Movies Found",language: language, count: count, movies: movies });
   }
